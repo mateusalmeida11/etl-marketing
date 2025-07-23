@@ -1,0 +1,7 @@
+**cache
+**__pycache__
+**htmlcov
+**.coverage
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
