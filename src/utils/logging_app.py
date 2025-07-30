@@ -9,3 +9,6 @@ class LoggerAplication:
         )
         self.storage_logs = []
         self.logger = logging.getLogger(name=name)
+
+    def _log(self, name):
+        pass
