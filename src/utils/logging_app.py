@@ -23,3 +23,6 @@ class LoggerAplication:
 
     def info(self, message):
         self._log(logging.INFO, message)
+
+    def error(self, message):
+        self._log(logging.ERROR, message)
