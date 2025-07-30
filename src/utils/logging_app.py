@@ -26,3 +26,7 @@ class LoggerAplication:
 
     def error(self, message):
         self._log(logging.ERROR, message)
+
+
+def setup_logger(name):
+    return LoggerAplication(name=name)
