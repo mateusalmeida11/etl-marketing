@@ -7,7 +7,7 @@ from urllib3.util.retry import Retry
 
 
 def build_url(base_url, endpoint, params):
-    base_url += endpoint
+    base_url += f"{endpoint}?"
     query_string = urlencode(params)
     base_url += query_string
     return base_url
