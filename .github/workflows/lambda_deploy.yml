@@ -38,7 +38,7 @@ jobs:
         working-directory: ./infra
         run: |
           terraform init
-          terraform apply -auto-approve -target=modules.ecr -target=modules.iam
+          terraform apply -auto-approve -target=modules.ecr -target=modules.policies
 
       - name: Set image target
         run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
