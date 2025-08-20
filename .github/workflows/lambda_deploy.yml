@@ -14,44 +14,45 @@ jobs:
       run:
         shell: bash
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.9.5
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{secrets.AWS_OIDC_ARN}}
-        role-session-name: GitHub_to_AWS_via_FederatedOIDC
-        aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.AWS_OIDC_ARN}}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
 
-    - name: Terraform Init e Apply (ECR + IAM)
-      working-directory: ./infra
-      run: |
-        terraform init
-        terraform apply -auto-aprove -target=modules.ecr -target=modules.iam
+      - name: Terraform Init e Apply (ECR + IAM)
+        working-directory: ./infra
+        run: |
+          terraform init
+          terraform apply -auto-approve -target=modules.ecr -target=modules.iam
 
-    - name: Set image target
-      run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+      - name: Set image target
+        run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
-    - name: Build Docker Image
-      run: |
-        IMAGE_URI=$(terraform output -raw ecr_repositor_url)
-        docker build -t etl-for-email-marketing .
-        docker tag etl-for-email-marketing:latest $IMAGE_URI:$IMAGE_TAG
+      - name: Build Docker Image
+        run: |
+          IMAGE_URI=$(terraform output -raw ecr_repositor_url)
+          docker build -t etl-for-email-marketing .
+          docker tag etl-for-email-marketing:latest $IMAGE_URI:$IMAGE_TAG
 
-    - name: Push Docker Image to ECR
-      run: |
-        IMAGE_URI=$(terraform output -raw ecr_repositor_url)
-        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $IMAGE_URI
-        docker push $IMAGE_URI:$IMAGE_TAG
+      - name: Push Docker Image to ECR
+        run: |
+          IMAGE_URI=$(terraform output -raw ecr_repositor_url)
+          REGISTRY_URI=$(echo $IMAGE_URI | cut -d'/' -f1)
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
+          docker push $IMAGE_URI:$IMAGE_TAG
 
-    - name: Terraform Apply Lambda
-      working-directory: ./infra
-      run: |
-        terraform apply -auto-approve -var="image_tag=$IMAGE_TAG"
+      - name: Terraform Apply Lambda
+        working-directory: ./infra
+        run: |
+          terraform apply -auto-approve -var="image_tag=$IMAGE_TAG"
