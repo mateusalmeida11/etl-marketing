@@ -27,6 +27,9 @@ jobs:
         with:
           terraform_version: 1.10.0
 
+      - name: Set image target
+        run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -34,14 +37,13 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init e Apply (ECR + IAM)
+      - name: Terraform Init
         working-directory: ./infra
         run: |
           terraform init
-          terraform apply -auto-approve -target=modules.ecr -target=modules.policies
-
-      - name: Set image target
-        run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+          terraform apply -auto-approve \
+          -target=module.ecr -target=module.policies
+          -var="image_tag=$IMAGE_TAG"
 
       - name: Build Docker Image
         run: |
