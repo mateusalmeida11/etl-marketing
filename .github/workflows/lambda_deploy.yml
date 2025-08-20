@@ -47,17 +47,18 @@ jobs:
         run: |
           terraform apply -auto-approve -target=module.ecr -target=module.policies -var="image_tag=$IMAGE_TAG"
 
-      - name: Build Docker Image
-        run: |
-          IMAGE_URI=$(cd infra && terraform output -raw ecr_repositor_url)
-          docker build -t $IMAGE_URI:$IMAGE_TAG .
+      - name: Get ECR URI
+        run: echo "IMAGE_URI=$(cd infra && terraform output -raw ecr_repositor_url)" >> $GITHUB_ENV
 
       - name: Push Docker Image to ECR
         run: |
-          IMAGE_URI=$(cd infra && terraform output -raw ecr_repositor_url)
           REGISTRY_URI=$(echo $IMAGE_URI | cut -d'/' -f1)
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
           docker push $IMAGE_URI:$IMAGE_TAG
+
+      - name: Build Docker Image
+        run: |
+          docker build -t $IMAGE_URI:$IMAGE_TAG .
 
       - name: Terraform Apply Lambda
         working-directory: ./infra
