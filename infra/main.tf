@@ -7,7 +7,7 @@ module "s3" {
 }
 
 module "iam" {
-    soruce = "./modules/policies"
+    source = "./modules/policies"
     bucket_s3_etl_arn = module.ecr.root_path_bucket_s3
 }
 
