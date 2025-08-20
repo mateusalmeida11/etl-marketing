@@ -50,8 +50,7 @@ jobs:
       - name: Build Docker Image
         run: |
           IMAGE_URI=$(terraform output -raw ecr_repositor_url)
-          docker build -t etl-for-email-marketing .
-          docker tag etl-for-email-marketing:latest $IMAGE_URI:$IMAGE_TAG
+          docker build -t $IMAGE_URI:$IMAGE_TAG .
 
       - name: Push Docker Image to ECR
         run: |
