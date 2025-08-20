@@ -50,15 +50,15 @@ jobs:
       - name: Get ECR URI
         run: echo "IMAGE_URI=$(cd infra && terraform output -raw ecr_repositor_url)" >> $GITHUB_ENV
 
+      - name: Build Docker Image
+        run: |
+          docker build -t $IMAGE_URI:$IMAGE_TAG .
+
       - name: Push Docker Image to ECR
         run: |
           REGISTRY_URI=$(echo $IMAGE_URI | cut -d'/' -f1)
           aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
           docker push $IMAGE_URI:$IMAGE_TAG
-
-      - name: Build Docker Image
-        run: |
-          docker build -t $IMAGE_URI:$IMAGE_TAG .
 
       - name: Terraform Apply Lambda
         working-directory: ./infra
