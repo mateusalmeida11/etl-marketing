@@ -45,7 +45,7 @@ jobs:
       - name: Terraform Apply (ECR + IAM)
         working-directory: ./infra
         run: |
-          terraform apply -autoaprove -target=module.ecr -target=module.policies -var="image_tag=$IMAGE_TAG"
+          terraform apply -auto-approve -target=module.ecr -target=module.policies -var="image_tag=$IMAGE_TAG"
 
       - name: Build Docker Image
         run: |
