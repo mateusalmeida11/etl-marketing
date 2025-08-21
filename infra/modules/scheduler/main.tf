@@ -1,5 +1,5 @@
 resource "aws_scheduler_schedule" "invoke_lambda" {
-  name       = "my-schedule"
+  name       = "schedule_etl_marketing"
   group_name = "default"
 
   flexible_time_window {
@@ -10,7 +10,7 @@ resource "aws_scheduler_schedule" "invoke_lambda" {
   schedule_expression_timezone = America/Sao_Paulo
 
   target {
-    arn      = aws_sqs_queue.example.arn
-    role_arn = aws_iam_role.example.arn
+    arn      = var.aws_lambda_arn
+    role_arn = var.aws_role_arn_scheduler
   }
 }
