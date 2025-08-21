@@ -76,7 +76,7 @@ resource aws_iam_role_policy "event_bridge_scheduler_policy" {
                     "lambda:InvokeFunction"
                 ]
                 Effect = "Allow"
-                Resource = var.aws_lambda_arn.arn
+                Resource = var.aws_lambda_arn
             }
         ]
     })

@@ -7,7 +7,7 @@ resource "aws_scheduler_schedule" "invoke_lambda" {
   }
 
   schedule_expression = "cron(0 9 ? * 2 *)"
-  schedule_expression_timezone = America/Sao_Paulo
+  schedule_expression_timezone = "America/Sao_Paulo"
 
   target {
     arn      = var.aws_lambda_arn
