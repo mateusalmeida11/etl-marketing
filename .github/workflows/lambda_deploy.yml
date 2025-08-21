@@ -45,7 +45,7 @@ jobs:
       - name: Terraform Apply (ECR + IAM)
         working-directory: ./infra
         run: |
-          terraform apply -auto-approve -target=module.ecr -target=module.policies -var="image_tag=$IMAGE_TAG"
+          terraform apply -auto-approve -target=module.ecr -var="image_tag=$IMAGE_TAG"
 
       - name: Get ECR URI
         run: echo "IMAGE_URI=$(cd infra && terraform output -raw ecr_repositor_url)" >> $GITHUB_ENV
