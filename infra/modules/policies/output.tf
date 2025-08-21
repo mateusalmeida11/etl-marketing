@@ -5,5 +5,5 @@ output "lambda_execution_role_arn" {
 
 output "aws_scheduler_execution_role_arn" {
     description = "Arn da role de execucao que sera utilizada no Scheduler"
-    value = aws_iam_role.event_bridge_role.arl
+    value = aws_iam_role.event_bridge_role.arn
 }
