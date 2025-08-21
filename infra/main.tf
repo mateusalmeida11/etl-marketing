@@ -17,3 +17,9 @@ module "lambda" {
     image_tag = var.image_tag
     arn_policy_lambda_execution = module.iam.lambda_execution_role_arn
 }
+
+module "scheduler" {
+    source = "./modules/scheduler"
+    aws_role_arn_scheduler = module.iam.aws_scheduler_execution_role_arn
+    aws_lambda_arn = module.lambda.aws_lambda_arn
+}
