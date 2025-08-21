@@ -45,7 +45,7 @@ resource "aws_iam_role_policy_attachment" "attach_permission_s3_acess" {
     policy_arn = aws_iam_policy.policy_access_lambda_s3.arn
 }
 
-------- 2. Role para EventBridge Schedule --------
+# ------- 2. Role para EventBridge Schedule --------
 
 resource aws_iam_role "event_bridge_role" {
     name = var.event_bridge_role_name
