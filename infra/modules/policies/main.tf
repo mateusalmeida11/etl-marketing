@@ -44,3 +44,40 @@ resource "aws_iam_role_policy_attachment" "attach_permission_s3_acess" {
     role = aws_iam_role.lambda_exec_role.name
     policy_arn = aws_iam_policy.policy_access_lambda_s3.arn
 }
+
+------- 2. Role para EventBridge Schedule --------
+
+resource aws_iam_role "event_bridge_role" {
+    name = var.event_bridge_role_name
+    assume_role_policy = jsonencode({
+        Version="2012-10-17"
+        Statement = [
+            {
+                Action = "sts:AssumeRole",
+                Effect = "Allow",
+                Principal = {
+                    Service = "scheduler.amazonaws.com"
+                }
+            }
+        ]
+    })
+}
+
+# Permissao para o Event Bridge Acessar a Lambda
+
+resource aws_iam_role_policy "event_bridge_scheduler_policy" {
+    name = var.event_bridge_policy_lambda_name
+    role = aws_iam_role.event_bridge_role.id
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Action = [
+                    "lambda:InvokeFunction"
+                ]
+                Effect = "Allow"
+                Resource = var.aws_lambda_arn.arn
+            }
+        ]
+    })
+}
