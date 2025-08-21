@@ -8,7 +8,8 @@ module "s3" {
 
 module "iam" {
     source = "./modules/policies"
-    bucket_s3_etl_arn = module.s3.root_path_bucket_s3
+    bucket_s3_etl_arn = module.s3.root_path_bucket_s3,
+    aws_lambda_arn= module.lambda.aws_lambda_arn
 }
 
 module "lambda" {
