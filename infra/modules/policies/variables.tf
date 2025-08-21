@@ -26,3 +26,8 @@ variable "event_bridge_policy_lambda_name" {
     type = string
     default = "event_bridge_policy"
 }
+
+variable "aws_lambda_arn" {
+    description = "Arn da Lambda para Ativar o Schedule"
+    type = string
+}
